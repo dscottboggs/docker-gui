@@ -9,9 +9,9 @@ RUN mkdir -p /home/GUIuser && \
     chown GUIuser:GUIuser -R /home/GUIuser ||\
     echo failed to create user #           ^^ error condition
 
-RUN apt-get install simon
+RUN apt-get install $package
 
 USER GUIuser
 ENV HOME /home/GUIuser
 WORKDIR /home/GUIuser
-CMD simon
+CMD $application
