@@ -16,7 +16,9 @@ final_dockerfile = render(
             'name': "ubuntu",
             'version': 16.04,
             'pkg_mngr_cmd': 'apt-get update && apt-get install -y'
-        }
+        },
+        'uid': 1000,
+        'gid': 1000
     }
 )
 with open(getpath(working_directory, "Dockerfile"), 'w') as dockerfile:
