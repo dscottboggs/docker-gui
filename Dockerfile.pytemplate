@@ -6,8 +6,7 @@ RUN mkdir -p /home/GUIuser && \
     echo "GUIuser:x:1000:" >> /etc/group && \
     echo "GUIuser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/GUIuser && \
     chmod 0440 /etc/sudoers.d/GUIuser && \
-    chown GUIuser:GUIuser -R /home/GUIuser ||\
-    echo failed to create user #           ^^ error condition
+    chown GUIuser:GUIuser -R /home/GUIuser
 
 RUN apt-get install $application
 
