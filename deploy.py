@@ -31,7 +31,10 @@ composition = {
             'build': working_directory,
             'command': PACKAGE_NAME,
             'volumes': [
-                "/tmp/.X11-unix:/tmp/.X11-unix"
+                "/tmp/.X11-unix:/tmp/.X11-unix",
+                "/dev/dri:/dev/dri",
+                "/dev/snd:/dev/snd",
+                "/dev/video0:/dev/video0"
             ],
             'networks': ['application'],
             'environment': {'DISPLAY': environ['DISPLAY']}
