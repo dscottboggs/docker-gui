@@ -1,7 +1,7 @@
 FROM {{distro.name}}:{{distro.version}}
 MAINTAINER D. Scott Boggs "scott@tams.tech"
 
-RUN {{distro.pkg_mngr_cmd}} sudo
+RUN {{distro.pkg_mngr_cmd.update}} && {{distro.pkg_mngr_cmd.install}} sudo
 
 RUN mkdir -p /home/GUIuser && \
     echo "GUIuser:x:{{uid}}:{{gid}}:GUIuser,,,:/home/GUIuser:/bin/bash" >>\
@@ -11,7 +11,7 @@ RUN mkdir -p /home/GUIuser && \
     chmod 0440 /etc/sudoers.d/GUIuser && \
     chown GUIuser:GUIuser -R /home/GUIuser
 
-RUN {{pkg_mngr_cmd}} {{package}}
+RUN {{distro.pkg_mngr_cmd.install}} {{package}}
 
 USER GUIuser
 ENV HOME /home/GUIuser
