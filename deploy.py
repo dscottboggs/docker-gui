@@ -4,7 +4,7 @@ from os.path import join as getpath
 from os import environ
 from pystache import render
 working_directory = dirname(realpath(__file__))
-PACKAGE_NAME = "geany"
+PACKAGE_NAME = "simon"
 with open(getpath(working_directory, "Dockerfile.pytemplate"), 'r') as dockerfile:
     before_substitutions = dockerfile.read()
 final_dockerfile = render(

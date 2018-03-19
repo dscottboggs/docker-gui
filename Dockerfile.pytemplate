@@ -1,7 +1,8 @@
 FROM {{distro.name}}:{{distro.version}}
 MAINTAINER D. Scott Boggs "scott@tams.tech"
 
-RUN {{distro.pkg_mngr_cmd.update}} && {{distro.pkg_mngr_cmd.install}} sudo
+RUN {{distro.pkg_mngr_cmd.update}} && \
+    {{distro.pkg_mngr_cmd.install}} sudo libxext-dev libxrender-dev libxtst-dev
 
 RUN mkdir -p /home/GUIuser && \
     echo "GUIuser:x:{{uid}}:{{gid}}:GUIuser,,,:/home/GUIuser:/bin/bash" >>\
