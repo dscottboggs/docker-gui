@@ -1,12 +1,7 @@
-from string import Template
-PACKAGE_NAME = "simon"
-dockerfile = open("Dockerfile.pytemplate", 'r')
-before_substitutions = Template(dockerfile.read())
-dockerfile.close()
-final_dockerfile = before_substitutions.substitute(
-    {
-        "application": PACKAGE_NAME,
-        "package": PACKAGE_NAME
+from yaml import dump
+from os.path import dirname, realpath
+from os.path import join as getpath
+from os import environ
 from pystache import render
 working_directory = dirname(realpath(__file__))
 PACKAGE_NAME = "geany"
@@ -24,11 +19,23 @@ final_dockerfile = render(
         }
     }
 )
-dockerfile = open("Dockerfile", 'w')
-dockerfile.write(final_dockerfile)
-composition = {
-    version: '2.0',
-    services: {
+with open(getpath(working_directory, "Dockerfile"), 'w') as dockerfile:
+    dockerfile.write(final_dockerfile)
 
-    }
+composition = {
+    'version': '2.0',
+    'services': {
+        'application': {
+            'build': working_directory,
+            'command': PACKAGE_NAME,
+            'volumes': [
+                "/tmp/.X11-unix:/tmp/.X11-unix"
+            ],
+            'networks': ['application'],
+            'environment': {'DISPLAY': environ['DISPLAY']}
+        }
+    },
+    'networks': {'application': None}
 }
+with open(getpath(working_directory, "docker-compose.yml"), 'w') as compose_file:
+    compose_file.write(dump(composition))
