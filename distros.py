@@ -1,5 +1,6 @@
 from json import dumps
 from sys import maxsize
+from textwrap import dedent
 is_64bit = maxsize > 2**32  #check if arch is amd64, see https://stackoverflow.com/questions/9964396/python-check-if-a-system-is-32-or-64-bit-to-determine-whether-to-run-the-funct#9964440
 distros = []
 
@@ -31,15 +32,18 @@ class Distro():
         self.image = image
         self.version = version
         self.pkgs_update = pkgs_update
-        self.pkgs_install = lambda pkg: _install(pkgs_install, pkg)
+        self.pkgs_install = lambda pkg: self._install(pkgs_install, pkg)
         self.pkgs_refresh = pkgs_refresh
         self.distro = distro if distro is not None else f"{image.capitalize()}, version {version}"
+    @staticmethod
     def _install(cmd, pkg):
-        if type(pkg) === 'string':
+        if type(pkg) == type(''):
             return "%s %s" % (cmd, pkg)
-        elif type(pkg) === 'list' or type(pkg) === 'tuple':
+        elif type(pkg) == type([]) or type(pkg) == type(tuple()):
             outstr = cmd
             for p in pkg:
+                assert not ' ' in p, \
+                    f"No spaces in package names! (package {p})"
                 outstr += " %s"%(p)
             return outstr
         else:
@@ -122,7 +126,7 @@ distros.append(
 def getdistro(distroname, version=None):
     getversion = lambda : version or "latest"
     for distro in distros:
-        if distro['distro']===distroname and distro['version']===getversion():
+        if distro['distro']==distroname and distro['version']==getversion():
             return distro
     else:
         raise ValueError("%s:%s is not a valid distro." % (distroname,version))
