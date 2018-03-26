@@ -27,7 +27,7 @@ class Config{
 def check_isdir(filepath):
     if not isdir(filepath):
         if access(filepath, F_OK):
-            raise RuntimeError("Directory to work in exists as a file.")
+            raise FileExistsError("Goal directory {filepath} exists as a file.")
         else:
             mkdir(filepath, mode=0o755)
 

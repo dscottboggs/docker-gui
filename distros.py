@@ -38,12 +38,12 @@ class Distro():
                   - pkgs_update: {pkgs_update} (type {type(pkgs_update)})
                   - pkgs_install: {pkgs_install} (type {type(pkgs_install)})
                   - pkgs_refresh: {pkgs_refresh} (type {type(pkgs_refresh)})"""))
-        self.image = image
-        self.version = version
+        self.image = image.lower()
+        self.version = version.lower()
         self.pkgs_update = pkgs_update
         self.pkgs_install = lambda pkg: self._install(pkgs_install, pkg)
         self.pkgs_refresh = pkgs_refresh
-        self.distro = distro if distro is not None else f"{image.capitalize()}, version {version}"
+        self.distro = distro if distro is not None else f"{image.capitalize()}, version {version.lower()}"
     @staticmethod
     def _install(cmd, pkg):
         if type(pkg) == type(''):
