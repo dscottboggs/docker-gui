@@ -35,6 +35,13 @@ def check_isdir(filepath):
 class Application():
     """An application to deploy"""
     def __init__(self, package: str, application: str, distro: str, version: str=''):
+        if not type('')==type(package)==type(application)==type(distro)==type(version):
+            raise TypeError(dedent(f"""
+                One of the following attributes was not a string:
+                  - package {package} (type {type(package)})
+                  - application {application} (type {type(application)})
+                  - distro {distro} (type {type(distro)})
+                  - version {version} (type {type(version)})"""))
         self.package = package
         self.application = application
         self.distro = getdistro(distro, version)

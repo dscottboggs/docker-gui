@@ -29,6 +29,15 @@ class Distro():
       """
     def __init__(self, image: str, version:str, pkgs_update: str,
             pkgs_install: str, pkgs_refresh: str, distro=None):
+        if not type('')==type(image)==type(version)==type(pkgs_update)==\
+                type(pkgs_install)==type(pkgs_refresh):
+            raise TypeError(dedent(f"""
+                One of the following was not a string:
+                  - image: {image} (type {type(image)})
+                  - version: {version} (type {type(version)})
+                  - pkgs_update: {pkgs_update} (type {type(pkgs_update)})
+                  - pkgs_install: {pkgs_install} (type {type(pkgs_install)})
+                  - pkgs_refresh: {pkgs_refresh} (type {type(pkgs_refresh)})"""))
         self.image = image
         self.version = version
         self.pkgs_update = pkgs_update
