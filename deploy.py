@@ -87,7 +87,7 @@ class Application():
         )
 
     def init_files(self):
-        self.working_directory = getpath('usr', 'share', 'docker-gui')
+        self.working_directory = getpath('/', 'usr', 'share', 'docker-gui')
         check_isdir(self.working_directory)
         with open(getpath(working_directory, "Dockerfile.pytemplate"), 'r') as dockerfile:
             self.before_substitutions = dockerfile.read()
