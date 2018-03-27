@@ -50,41 +50,19 @@ class Application():
         self.init_files()
         self.write_desktop_file()
 
-    def run(self):
-        if dc.containers.list(all=True, filters={'name':self.container_name}):
-            #an empty list is falsy and will skip this block
-            if dc.containers.list(filters={'name':self.container_name}):
-                Config.log("Application is already running!")
-                return
-            for container in docker.containers.list(
-                        all=True
-                        filters={'name':self.container_name}
-                    ):
-                dc.api.remove_container(
-                    container
-                )
-        if not dc.images.list(name=self.image_name):
-            self.build()
-        dc.containers.run(
-            image=self.image_name,
-            devices=[
-                "/dev/snd:/dev/snd:rw",
-                "/dev/dri:/dev/dri:rw",
-                "/dev/video0:/dev/video0:rw"
-            ],
-            mounts=[
-                Mount(
-                    source="/tmp/.X11-unix",
-                    target="/tmp/.X11-unix",
-                    type='bind'
-                )
-            ],
-            environment={
-                'DISPLAY': local_environment['DISPLAY']
-            },
-            networks=[Config.application_network],
-            remove=True
-        )
+    def write_run_script(self):
+        with open(self.run_script_file, 'w') as run_script_file:
+            with open(getpath(
+                        self.working_directory, "runscript.pytemplate"
+                    )) as run_script_template:
+                run_script_file.write(render(
+                    text=run_script_template,
+                    context={
+                        'application_directory': self.application_directory,
+                        'image_name': self.image_name,
+                        'container_name': self.container_name
+                    }
+                ))
 
     def init_files(self):
         self.working_directory = getpath('/', 'usr', 'share', 'docker-gui')
@@ -96,6 +74,9 @@ class Application():
             self.application
         )
         check_isdir(self.application_directory)
+        self.run_script_file = getpath(
+                    self.application_directory, f"run_{self.application}"
+                )
 
     def write_desktop_file(self):
         with open(
@@ -106,22 +87,15 @@ class Application():
                         "%s.docker.desktop" % test_input['application']
                     )
                 ) as desktop_file:
-            desktop_file.write(render(
-                text=dedent("""
+            desktop_file.write(dedent(f"""
                     [Desktop Entry]
-                    Version=From {{ distro }}
-                    Name={{ application }}
-                    Exec={{ command }}
+                    Version=From {self.distro.distro}
+                    Name={self.application}
+                    Exec={self.run_script_file}
                     Terminal=false
                     Type=Application
                     Categories=Containerized
                     """
-                ),
-                context={
-                    'commmand': f"docker run {self.image_name}"
-                    'application': self.application,
-                    'distro': self.distro.distro
-                }
             ))
 
     def build(self):

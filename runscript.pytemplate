@@ -1,0 +1,49 @@
+from docker import DockerClient
+from docker.containers import list as list_containers
+def build():
+    """Builds a docker image for the specified environment."""
+    self.render_dockerfile()
+    dc.images.build(
+        path="{{application_directory}}",
+        tag="{{image_name}}"
+    )
+dc = DockerClient('unix://run/docker.sock', version='1.30')
+network_name = "docker_application_network"
+try:
+    application_network = dc.networks.list(names=[network_name])[0]
+except IndexError:
+    application_network = dc.networks.create(network_name)
+if dc.containers.list(all=True, filters={'name':"{{container_name}}" }):
+    #an empty list is falsy and will skip this block
+    if dc.containers.list(filters={'name':"{{container_name}}" }):
+        print("Application is already running!")
+        return
+    for container in list_containers(
+                all=True
+                filters={'name':"{{container_name}}" }
+            ):
+        dc.api.remove_container(
+            container
+        )
+if not dc.images.list(name="{{image_name}}"):
+    build()
+dc.containers.run(
+    image="{{image_name}}",
+    devices=[
+        "/dev/snd:/dev/snd:rw",
+        "/dev/dri:/dev/dri:rw",
+        "/dev/video0:/dev/video0:rw"
+    ],
+    mounts=[
+        Mount(
+            source="/tmp/.X11-unix",
+            target="/tmp/.X11-unix",
+            type='bind'
+        )
+    ],
+    environment={
+        'DISPLAY': local_environment['DISPLAY']
+    },
+    networks=[application_network],
+    remove=True
+)
