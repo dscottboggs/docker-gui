@@ -9,4 +9,6 @@
     - Linux Containers
     - BSD Jails
     - libvirt
+  - MacOS compatibility (with XQuartz installed)
   - QT5 interface
+  - Windows compatibility
