@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from json import dumps
 from sys import maxsize
 from textwrap import dedent
@@ -62,52 +63,49 @@ class Distro():
                 )
             )
 
-distros.append(
-    [
-        Distro(
-            image=distro,
-            version=version,
-            pkgs_update='apt-get upgrade -y',
-            pkgs_install='apt-get install -y',
-            pkgs_refresh='apt-get update'
-        ) for distro, version in (
-            ('ubuntu', '14.04'),
-            ('ubuntu', '16.04'),
-            ('ubuntu', '17.10'),
-            ('debian', 'oldstable'),
-            ('debian', 'stable'),
-            ('debian', 'testing'),
-            ('debian', 'experimental')
-        )
+distros += [
+    Distro(
+        image=distro,
+        version=version,
+        pkgs_update='apt-get upgrade -y',
+        pkgs_install='apt-get install -y',
+        pkgs_refresh='apt-get update'
+    ) for distro, version in (
+        ('ubuntu', '14.04'),
+        ('ubuntu', '16.04'),
+        ('ubuntu', '17.10'),
+        ('debian', 'oldstable'),
+        ('debian', 'stable'),
+        ('debian', 'testing'),
+        ('debian', 'experimental')
+    )
+]
+
+distros += [
+    Distro(
+        image=distro,
+        version=version,
+        pkgs_refresh='true', # not necessary for this distro, pass.
+        pkgs_install='yum install -y',
+        pkgs_update='yum upgrade -y'
+    ) for distro, version in [
+        ('centos', '7'),
+        ('centos', '6'),
+        ('centos', "7.4.1708"),
+        ('centos', "7.3.1611"),
+        ('centos', '7.2.1511'),
+        ('centos', '7.1.1503'),
+        ('centos', '7.0.1406'),
+        ('centos', '6.9'),
+        ('centos', '6.8'),
+        ('centos', '6.7'),
+        ('centos', '6.6'),
+        ('fedora', '27'),
+        ('fedora', '26'),
+        ('fedora', 'rawhide'),
+        ('fedora', 'branched')
     ]
-)
-distros.append(
-    [
-        Distro(
-            image=distro,
-            version=version,
-            pkgs_refresh='true', # not necessary for this distro, pass.
-            pkgs_install='yum install -y',
-            pkgs_update='yum upgrade -y'
-        ) for distro, version in [
-            ('centos', '7'),
-            ('centos', '6'),
-            ('centos', "7.4.1708"),
-            ('centos', "7.3.1611"),
-            ('centos', '7.2.1511'),
-            ('centos', '7.1.1503'),
-            ('centos', '7.0.1406'),
-            ('centos', '6.9'),
-            ('centos', '6.8'),
-            ('centos', '6.7'),
-            ('centos', '6.6'),
-            ('fedora', '27'),
-            ('fedora', '26'),
-            ('fedora', 'rawhide'),
-            ('fedora', 'branched')
-        ]
-    ]
-)
+]
 distros.append(
     Distro(
         image='antergos/archlinux-base-devel',
@@ -119,23 +117,21 @@ distros.append(
     )
 )
 
-distros.append(
-    [
-        Distro(
-            image="opensuse/amd64",
-            distro="OpenSUSE",
-            version=version,
-            pkgs_refresh='zypper --non-interactive refresh',
-            pkgs_install='zypper --non-interactive install',
-            pkgs_update='zypper --non-interactive update'
-        ) for version in ('leap', 'tumbleweed', 'latest')
-    ]
-)
+distros += [
+    Distro(
+        image="opensuse/amd64",
+        distro="OpenSUSE",
+        version=version,
+        pkgs_refresh='zypper --non-interactive refresh',
+        pkgs_install='zypper --non-interactive install',
+        pkgs_update='zypper --non-interactive update'
+    ) for version in ('leap', 'tumbleweed', 'latest')
+]
 
-def getdistro(distroname, version=None):
+def getdistro(distroname:str, version:str=''):
     getversion = lambda : version or "latest"
     for distro in distros:
-        if distro['distro']==distroname and distro['version']==getversion():
+        if distro.image==distroname.lower() and distro.version==getversion().lower():
             return distro
     else:
         raise ValueError("%s:%s is not a valid distro." % (distroname,version))
