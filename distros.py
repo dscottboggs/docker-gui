@@ -28,23 +28,29 @@ class Distro():
       - @param pkgs_update [str]: the command to run to update out-of-date
                                    packages
       """
-    def __init__(self, image: str, version:str, pkgs_update: str,
-            pkgs_install: str, pkgs_refresh: str, distro=None):
+    def __init__(
+                self, image: str, version:str, pkgs_update: str,
+                pkgs_install: str, pkgs_refresh: str, distro=None,
+                kernel_version:str
+            ):
         if not type('')==type(image)==type(version)==type(pkgs_update)==\
-                type(pkgs_install)==type(pkgs_refresh):
+                type(pkgs_install)==type(pkgs_refresh)==type(kernel_version):
             raise TypeError(dedent(f"""
                 One of the following was not a string:
                   - image: {image} (type {type(image)})
                   - version: {version} (type {type(version)})
                   - pkgs_update: {pkgs_update} (type {type(pkgs_update)})
                   - pkgs_install: {pkgs_install} (type {type(pkgs_install)})
-                  - pkgs_refresh: {pkgs_refresh} (type {type(pkgs_refresh)})"""))
+                  - pkgs_refresh: {pkgs_refresh} (type {type(pkgs_refresh)})
+                  - kernel_version: {kernel_version} (type {type(kernel_version)})
+                  """))
         self.image = image.lower()
         self.version = version.lower()
         self.pkgs_update = pkgs_update
         self.pkgs_install = lambda pkg: self._install(pkgs_install, pkg)
         self.pkgs_refresh = pkgs_refresh
         self.distro = distro if distro is not None else f"{image.capitalize()}, version {version.lower()}"
+        self.kernel_version = kernel_version
     @staticmethod
     def _install(cmd, pkg):
         if type(pkg) == type(''):
@@ -69,15 +75,19 @@ distros += [
         version=version,
         pkgs_update='apt-get upgrade -y',
         pkgs_install='apt-get install -y',
-        pkgs_refresh='apt-get update'
-    ) for distro, version in (
-        ('ubuntu', '14.04'),
-        ('ubuntu', '16.04'),
-        ('ubuntu', '17.10'),
-        ('debian', 'oldstable'),
-        ('debian', 'stable'),
-        ('debian', 'testing'),
-        ('debian', 'experimental')
+        pkgs_refresh='apt-get update',
+        kernel_version=kern
+    ) for distro, version, kern in (
+        ('ubuntu', '14.04', '3.13'),
+        ('ubuntu', '16.04', '4.4'),
+        ('ubuntu', 'latest', '4.4'),
+        ('ubuntu', '17.10', '4.13'),
+        ('debian', 'oldstable', '3.16'),
+        ('debian', 'stable', '4.9'),
+        ('debian', 'testing', '4.15'),
+        ('debian', 'unstable', '4.15'),
+        ('debian', 'latest', '4.9'),
+
     )
 ]
 
@@ -87,23 +97,25 @@ distros += [
         version=version,
         pkgs_refresh='true', # not necessary for this distro, pass.
         pkgs_install='yum install -y',
-        pkgs_update='yum upgrade -y'
-    ) for distro, version in [
-        ('centos', '7'),
-        ('centos', '6'),
-        ('centos', "7.4.1708"),
-        ('centos', "7.3.1611"),
-        ('centos', '7.2.1511'),
-        ('centos', '7.1.1503'),
-        ('centos', '7.0.1406'),
-        ('centos', '6.9'),
-        ('centos', '6.8'),
-        ('centos', '6.7'),
-        ('centos', '6.6'),
-        ('fedora', '27'),
-        ('fedora', '26'),
-        ('fedora', 'rawhide'),
-        ('fedora', 'branched')
+        pkgs_update='yum upgrade -y',
+        kernel_version=kern
+    ) for distro, version, kern in [
+        ('centos', '7', '3.10'),
+        ('centos', 'latest', '3.10'),
+        ('centos', '6', '2.6'),
+        ('centos', "7.4.1708", '3.10'),
+        ('centos', "7.3.1611", '3.10'),
+        ('centos', '7.2.1511', '3.10'),
+        ('centos', '7.1.1503', '3.10'),
+        ('centos', '7.0.1406', '3.10'),
+        ('centos', '6.9', '2.6'),
+        ('centos', '6.8', '2.6'),
+        ('centos', '6.7', '2.6'),
+        ('centos', '6.6', '2.6'),
+        ('fedora', '27', '4.13'),
+        ('fedora', '26', '4.11'),
+        ('fedora', 'rawhide', '4.15'),
+        ('fedora', 'latest', '4.13')
     ]
 ]
 distros.append(
@@ -113,7 +125,8 @@ distros.append(
         pkgs_refresh='true', # install/update also do refresh (pass)
         pkgs_install='pacman -Sy',
         pkgs_update='pacman -Syu',
-        distro='Arch Linux (Antergos)'
+        distro='Arch Linux (Antergos)',
+        kernel='4.9' #minimum
     )
 )
 
@@ -125,7 +138,11 @@ distros += [
         pkgs_refresh='zypper --non-interactive refresh',
         pkgs_install='zypper --non-interactive install',
         pkgs_update='zypper --non-interactive update'
-    ) for version in ('leap', 'tumbleweed', 'latest')
+    ) for version, kern in (
+        ('leap', '4.4'),
+        ('tumbleweed', '4.15'),
+        ('latest', '4.4')
+    )
 ]
 
 def getdistro(distroname:str, version:str=''):

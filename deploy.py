@@ -17,6 +17,15 @@ from textwrap import dedent
 from pystache import render
 from docker import DockerClient
 from docker.types import Mount
+from os import uname
+from re import search
+
+sysinfo = uname()
+
+if not sysinfo.sysname=='Linux':
+    raise(NotImplementedError(f"Your system, {sysinfo.sysname}, has not been implemented yet"))
+
+
 
 class Config():
     dc = DockerClient('unix://run/docker.sock', version='1.30')
@@ -26,6 +35,22 @@ class Config():
     except IndexError:
         application_network = dc.networks.create(network_name)
     log=print
+    kernel_version_match = search('\d\.\d\d?', sysinfo.version)
+    kernel_version = sysinfo.version[
+        kernel_version_match.start():kernel_version_match.end()
+    ]
+    kernels = [
+        '2.6',
+        '3.10',
+        '3.13',
+        '3.16',
+        '4.4',
+        '4.9',
+        '4.11',
+        '4.13',
+        '4.15'
+    ]
+    kernel_index = kernels.index(kernel_version)
 
 def check_isdir(filepath:str):
     if not isdir(filepath):
@@ -51,6 +76,20 @@ class Application():
         self.distro = getdistro(distro, version)
         self.image_name = f"img_{self.application}_in_{self.distro.image}_{self.distro.version}"
         self.container_name = self.image_name[4:]
+        if Config.kernels.index(self.distro.kernel_version) > Config.kernel_index:
+            print(
+                "Warning! This application was packaged for kernel version",
+                self.distro.kernel_version,
+                "but this system uses",
+                f'{Config.kernel_version}.',
+                "you have 10 seconds to cancel this installation, or you can",
+                "continue with the installation. It may work, despite this",
+                "issue."
+            )
+            count=10
+            while count>0:
+                print(count, "seconds.")
+                sleep(1)
         self.init_files()
         self.write_desktop_file()
 
