@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from distros import getdistro
 test_input = {
     "package": "x11-apps",
@@ -10,11 +11,14 @@ from os.path import dirname, realpath, isdir
 from os.path import join as getpath
 from os import environ as local_environment
 from os import makedirs as mkdir
+from os import F_OK as file_exists
+from os import access
+from textwrap import dedent
 from pystache import render
 from docker import DockerClient
 from docker.types import Mount
 
-class Config{
+class Config():
     dc = DockerClient('unix://run/docker.sock', version='1.30')
     network_name = "docker_application_network"
     try:
@@ -22,15 +26,15 @@ class Config{
     except IndexError:
         application_network = dc.networks.create(network_name)
     log=print
-}
 
-def check_isdir(filepath):
+def check_isdir(filepath:str):
     if not isdir(filepath):
-        if access(filepath, F_OK):
+        if access(filepath, mode=file_exists):
             raise FileExistsError("Goal directory {filepath} exists as a file.")
         else:
             mkdir(filepath, mode=0o755)
-
+            return True
+    return False
 
 class Application():
     """An application to deploy"""
@@ -45,10 +49,47 @@ class Application():
         self.package = package
         self.application = application
         self.distro = getdistro(distro, version)
-        self.image_name = f"img_{self.application}_in_{self.distro.name}_{self.distro.version}"
-        self.container_name = image_name[4:]
+        self.image_name = f"img_{self.application}_in_{self.distro.image}_{self.distro.version}"
+        self.container_name = self.image_name[4:]
         self.init_files()
         self.write_desktop_file()
+
+    def run(self):
+        if Config.dc.containers.list(all=True, filters={'name': self.container_name }):
+            #an empty list is falsy and will skip this block
+            if Config.dc.containers.list(filters={'name': self.container_name }):
+                print("Application is already running!")
+                return
+            for container in docker.containers.list(
+                        all=True,
+                        filters={'name': self.container_name }
+                    ):
+                Config.dc.api.remove_container(
+                    container
+                )
+        if not Config.dc.images.list(name=self.image_name):
+            build()
+        Config.dc.containers.run(
+            image=self.image_name,
+            devices=[
+                "/dev/snd:/dev/snd:rw",
+                "/dev/dri:/dev/dri:rw",
+                "/dev/video0:/dev/video0:rw"
+            ],
+            mounts=[
+                Mount(
+                    source="/tmp/.X11-unix",
+                    target="/tmp/.X11-unix",
+                    type='bind'
+                )
+            ],
+            environment={
+                'DISPLAY': local_environment['DISPLAY']
+            },
+            networks=[Config.application_network],
+            remove=True
+        )
+
 
     def write_run_script(self):
         with open(self.run_script_file, 'w') as run_script_file:
@@ -67,8 +108,14 @@ class Application():
     def init_files(self):
         self.working_directory = getpath('/', 'usr', 'share', 'docker-gui')
         check_isdir(self.working_directory)
-        with open(getpath(working_directory, "Dockerfile.pytemplate"), 'r') as dockerfile:
-            self.before_substitutions = dockerfile.read()
+        with open(
+                    getpath(
+                        self.working_directory,
+                        "Dockerfile.pytemplate"
+                    ),
+                    'r'
+                ) as dockerfile:
+            self.dockerfile_template = dockerfile.read()
         self.application_directory = getpath(
             self.working_directory,
             self.application
@@ -81,11 +128,13 @@ class Application():
     def write_desktop_file(self):
         with open(
                     getpath(
+                        '/',
                         'usr',
                         'share',
                         'applications',
                         "%s.docker.desktop" % test_input['application']
-                    )
+                    ),
+                    'w'
                 ) as desktop_file:
             desktop_file.write(dedent(f"""
                     [Desktop Entry]
@@ -108,7 +157,7 @@ class Application():
 
     def render_dockerfile(self):
         self.final_dockerfile = render(
-            template=self.before_substitutions,
+            template=self.dockerfile_template,
             context={
                 'package': self.package,
                 'application': self.application,
