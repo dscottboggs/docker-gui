@@ -8,12 +8,13 @@ def show_usage():
     print(dedent("""
         Run a GUI program in a docker container.
 
-        Usage: docker-gui (run|build) PACKAGE_NAME from DISTRO version DISTRO_VERSION launched with APPLICATION_NAME"""
+        Usage: docker-gui (run|build) PACKAGE_NAME from DISTRO [ version DISTRO_VERSION ] launched-with APPLICATION_NAME"""
     ))
     exit(1)
 
 def check_args(args: list):
     argvals = {}
+    argvals['package_name'] = args[0]
     try:
         if args[1]=='from':
             argvals['distro']=args[2]
@@ -22,17 +23,17 @@ def check_args(args: list):
             show_usage()
         if args[3]=='version':
             argvals['version']=args[4]
-            if args[5:6]==['launched', 'with']:
-                argvals['application_name']=args[7]
-            else:
-                print(args[5], args[6], "should have been 'launched with'")
-                show_usage()
-        else:
-            version=args[3]
-            if args[4:5]==['launched', 'with']:
+            if args[5]=='launched-with':
                 argvals['application_name']=args[6]
             else:
-                print(args[4], args[5], "should have been 'launched with'")
+                print(f'"{args[5]}"', "should have been 'launched-with'")
+                show_usage()
+        else:
+            version=''
+            if args[3]=='launched-with':
+                argvals['application_name']=args[4]
+            else:
+                print(f'"{args[3]}"', "should have been 'launched-with'")
                 show_usage()
     except IndexError:
         show_usage()
@@ -40,10 +41,9 @@ def check_args(args: list):
 
 
 def build(args: list):
-    pkg_name = args[0].lower()
     argvals = check_args(args)
     return Application(
-        package_name=pkg_name,
+        package_name=argvals['package_name'],
         application_name=argvals['application_name'],
         distro=argvals['distro'],
         version=argvals['version']
