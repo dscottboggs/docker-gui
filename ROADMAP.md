@@ -1,5 +1,5 @@
 *TODO for basic functionality*:
-  - Write run script to file in the application folder
+  - ~~Write run script to file in the application folder~~
   - CLI interface
 *Roadmap*:
   - check for kernel disagreements
