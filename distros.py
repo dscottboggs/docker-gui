@@ -30,8 +30,8 @@ class Distro():
       """
     def __init__(
                 self, image: str, version:str, pkgs_update: str,
-                pkgs_install: str, pkgs_refresh: str, distro=None,
-                kernel_version:str
+                pkgs_install: str, pkgs_refresh: str, kernel_version:str,
+                distro=None
             ):
         if not type('')==type(image)==type(version)==type(pkgs_update)==\
                 type(pkgs_install)==type(pkgs_refresh)==type(kernel_version):
@@ -125,8 +125,8 @@ distros.append(
         pkgs_refresh='true', # install/update also do refresh (pass)
         pkgs_install='pacman -Sy',
         pkgs_update='pacman -Syu',
-        distro='Arch Linux (Antergos)',
-        kernel='4.9' #minimum
+        kernel_version='4.9', #minimum
+        distro='Arch Linux (Antergos)'
     )
 )
 
@@ -137,7 +137,8 @@ distros += [
         version=version,
         pkgs_refresh='zypper --non-interactive refresh',
         pkgs_install='zypper --non-interactive install',
-        pkgs_update='zypper --non-interactive update'
+        pkgs_update='zypper --non-interactive update',
+        kernel_version=kern
     ) for version, kern in (
         ('leap', '4.4'),
         ('tumbleweed', '4.15'),

@@ -16,7 +16,7 @@ class TestCLI():
     def test_build(self):
         run(
             [
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} build x11-apps from ubuntu 16.04 launched with xeyes',
+                f'{getpath(dirname(realpath(__file__)), "cli.py")} build x11-apps from Ubuntu version 16.04 launched-with xeyes',
             ],
             stdout=PIPE,
             check=True,
@@ -25,7 +25,7 @@ class TestCLI():
     def test_run(self):
         run(
             [
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} run x11-apps from ubuntu 16.04 launched with xeyes',
+                f'{getpath(dirname(realpath(__file__)), "cli.py")} run x11-apps from ubuntu version 16.04 launched-with xeyes',
             ],
             stdout=PIPE,
             check=True,
@@ -62,7 +62,7 @@ class TestCLI():
             ).stdout.decode()==dedent("""
                 Run a GUI program in a docker container.
 
-                Usage: docker-gui (run|build) PACKAGE_NAME from DISTRO version DISTRO_VERSION launched with APPLICATION_NAME
+                Usage: docker-gui (run|build) PACKAGE_NAME from DISTRO [ version DISTRO_VERSION ] launched-with APPLICATION_NAME
                 """)
 
 class TestApplicationClass():
@@ -170,6 +170,7 @@ class TestDistroClass():
     distro_update_cmd = "th1s iS n-t"
     distro_install_cmd = "a --rEal"
     distro_refresh_cmd = 'dist-ribUTi0n or anything'
+    distro_kernel_version = 'fakekernel'
     def get_test_distro(self):
         """A distro object to work with."""
         return Distro(
@@ -177,7 +178,8 @@ class TestDistroClass():
             version=self.distro_version,
             pkgs_update=self.distro_update_cmd,
             pkgs_install=self.distro_install_cmd,
-            pkgs_refresh=self.distro_refresh_cmd
+            pkgs_refresh=self.distro_refresh_cmd,
+            kernel_version=self.distro_kernel_version
         )
     def test_get_distro_function(self):
         with raises(ValueError):

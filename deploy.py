@@ -10,6 +10,7 @@ from yaml import dump
 from os.path import dirname, realpath, isdir
 from os.path import join as getpath
 from os import environ as local_environment
+from os import getuid, getgid
 from os import makedirs as mkdir
 from os import F_OK as file_exists
 from os import access
@@ -107,7 +108,7 @@ class Application():
                     container
                 )
         if not Config.dc.images.list(name=self.image_name):
-            build()
+            self.build()
         Config.dc.containers.run(
             image=self.image_name,
             devices=[
@@ -189,7 +190,7 @@ class Application():
     def build(self):
         """Builds a docker image for the specified environment."""
         self.render_dockerfile()
-        dc.images.build(
+        Config.dc.images.build(
             path=self.application_directory,
             tag=self.image_name
         )
@@ -201,11 +202,11 @@ class Application():
                 'package': self.package,
                 'application': self.application,
                 'distro': self.distro,
-                'uid': environ['UID'],
-                'gid': environ['GID']
+                'uid': getuid(),
+                'gid': getgid()
             }
         )
         with open(getpath(
                     self.application_directory, "Dockerfile"
                 ),'w') as dockerfile:
-            dockerfile.write(final_dockerfile)
+            dockerfile.write(self.final_dockerfile)
