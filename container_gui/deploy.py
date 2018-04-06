@@ -45,8 +45,7 @@ class Config():
         '3.16',
         '4.4',
         '4.9',
-        '4.11',
-        '4.13',
+        '4.14',
         '4.15'
     ]
     kernel_index = kernels.index(kernel_version)
