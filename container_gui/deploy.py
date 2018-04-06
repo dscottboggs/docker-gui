@@ -26,8 +26,6 @@ sysinfo = uname()
 if not sysinfo.sysname=='Linux':
     raise(NotImplementedError(f"Your system, {sysinfo.sysname}, has not been implemented yet"))
 
-
-
 class Config():
     dc = DockerClient('unix://run/docker.sock', version='1.30')
     network_name = "docker_application_network"
@@ -36,8 +34,8 @@ class Config():
     except IndexError:
         application_network = dc.networks.create(network_name)
     log=print
-    kernel_version_match = search('\d\.\d\d?', sysinfo.version)
-    kernel_version = sysinfo.version[
+    kernel_version_match = search('\d\.\d\d?', sysinfo.release)
+    kernel_version = sysinfo.release[
         kernel_version_match.start():kernel_version_match.end()
     ]
     kernels = [
