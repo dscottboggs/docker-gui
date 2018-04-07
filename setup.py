@@ -5,7 +5,25 @@ from setuptools import setup
 runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE)
 
 if not os.access('/usr/share/docker-gui', os.W_OK|os.X_OK) or not os.isdir('/usr/share/docker-gui'):
-    runcmd("sudo mkdir -p /usr/share/docker-gui && sudo chown 1000:1000 /usr/share/docker-gui")
+    runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {os.getuid()}:{os.getgid()} /usr/share/docker-gui")
+
+os.link(
+    build_path(
+        os.path.dirname(os.path.realpath(__file__)),
+        "container_gui",
+        "runscript.pytemplate"
+    ),
+    build_path('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
+)
+
+os.link(
+    build_path(
+        os.path.dirname(os.path.realpath(__file__)),
+        "container_gui",
+        "Dockerfile.pytemplate"
+    ),
+    build_path('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
+)
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
