@@ -176,7 +176,7 @@ class Application():
                 'w'
             )
         except PermissionError:
-            runcmd("sudo echo '%s' > '%s'"%(
+            runcmd("""sudo su -c 'echo "{0}" > "{1}" && chown {2}:{3} {1}'""".format(
                 dedent(f"""
                         [Desktop Entry]
                         Version=From {self.distro.distro}
@@ -193,7 +193,9 @@ class Application():
                     'share',
                     'applications',
                     "%s.docker.desktop" % test_input['application']
-                )
+                ),
+                os.getuid(),
+                os.getgid()
             ))
         desktop_file.write(dedent(f"""
                 [Desktop Entry]
