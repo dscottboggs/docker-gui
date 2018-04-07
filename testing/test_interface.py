@@ -11,10 +11,11 @@ from subprocess import run, PIPE, CalledProcessError
 class TestCLI():
     """Testing for the CLI interface"""
     shell_enabled = True
+    cli_filename = getpath(dirname(realpath(__file__)), "container_gui", "cli.py")
     def test_build(self):
         run(
             [
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} build x11-apps from Ubuntu version 16.04 launched-with xeyes',
+                f'{self.cli_filename} build x11-apps from Ubuntu version 16.04 launched-with xeyes',
             ],
             stdout=PIPE,
             check=True,
@@ -23,7 +24,7 @@ class TestCLI():
     def test_run(self):
         run(
             [
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} run x11-apps from ubuntu version 16.04 launched-with xeyes',
+                f'{self.cli_filename} run x11-apps from ubuntu version 16.04 launched-with xeyes',
             ],
             stdout=PIPE,
             check=True,
@@ -33,7 +34,7 @@ class TestCLI():
         with raises(CalledProcessError):
             run(
                 [
-                    f'{getpath(dirname(realpath(__file__)), "cli.py")} wrong input',
+                    f'{self.cli_filename} wrong input',
                 ],
                 stdout=PIPE,
                 check=True,
@@ -41,20 +42,20 @@ class TestCLI():
             )
         with raises(CalledProcessError):
             run(
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} run invalid args but not all',
+                f'{self.cli_filename} run invalid args but not all',
                 stdout=PIPE,
                 check=True,
                 shell=self.shell_enabled
             )
         with raises(CalledProcessError):
             run(
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} run valid from up until here invalid now',
+                f'{self.cli_filename} run valid from up until here invalid now',
                 stdout=PIPE,
                 check=True,
                 shell=self.shell_enabled
             )
         assert run(
-                f'{getpath(dirname(realpath(__file__)), "cli.py")} usage',
+                f'{self.cli_filename} usage',
                 stdout=PIPE,
                 shell=self.shell_enabled
             ).stdout.decode()==dedent("""
