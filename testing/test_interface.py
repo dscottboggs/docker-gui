@@ -11,7 +11,7 @@ from subprocess import run, PIPE, CalledProcessError
 class TestCLI():
     """Testing for the CLI interface"""
     shell_enabled = True
-    cli_filename = getpath(dirname(realpath(__file__)), "container_gui", "cli.py")
+    cli_filename = getpath(dirname(realpath(__file__)).rsplit('/', maxsplit=1)[0], "container_gui", "cli.py")
     def test_build(self):
         run(
             [
