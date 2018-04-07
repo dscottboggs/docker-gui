@@ -20,7 +20,9 @@ from docker import DockerClient
 from docker.types import Mount
 from os import uname
 from re import search
+from subprocess import run, PIPE
 
+runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE, stdin=PIPE)
 sysinfo = uname()
 
 if not sysinfo.sysname=='Linux':
@@ -163,26 +165,46 @@ class Application():
                 )
 
     def write_desktop_file(self):
-        with open(
-                    getpath(
-                        '/',
-                        'usr',
-                        'share',
-                        'applications',
-                        "%s.docker.desktop" % test_input['application']
-                    ),
-                    'w'
-                ) as desktop_file:
-            desktop_file.write(dedent(f"""
-                    [Desktop Entry]
-                    Version=From {self.distro.distro}
-                    Name={self.application}
-                    Exec={self.run_script_file}
-                    Terminal=false
-                    Type=Application
-                    Categories=Containerized
-                    """
+        try:
+            desktop_file = open(getpath(
+                    '/',
+                    'usr',
+                    'share',
+                    'applications',
+                    "%s.docker.desktop" % test_input['application']
+                ),
+                'w'
+            )
+        except PermissionError:
+            runcmd("sudo echo %s > %s"%(
+                dedent(f"""
+                        [Desktop Entry]
+                        Version=From {self.distro.distro}
+                        Name={self.application}
+                        Exec={self.run_script_file}
+                        Terminal=false
+                        Type=Application
+                        Categories=Containerized
+                        """
+                ),
+                getpath(
+                    '/',
+                    'usr',
+                    'share',
+                    'applications',
+                    "%s.docker.desktop" % test_input['application']
+                )
             ))
+        desktop_file.write(dedent(f"""
+                [Desktop Entry]
+                Version=From {self.distro.distro}
+                Name={self.application}
+                Exec={self.run_script_file}
+                Terminal=false
+                Type=Application
+                Categories=Containerized
+                """
+        ))
 
     def build(self):
         """Builds a docker image for the specified environment."""
