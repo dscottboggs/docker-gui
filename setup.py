@@ -4,7 +4,7 @@ from setuptools import setup
 
 runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE)
 
-if not os.access('/usr/share/docker-gui', os.W_OK|os.X_OK) or not os.isdir('/usr/share/docker-gui'):
+if not os.access('/usr/share/docker-gui', os.W_OK|os.X_OK) or not os.[ath.isdir('/usr/share/docker-gui'):
     runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {os.getuid()}:{os.getgid()} /usr/share/docker-gui")
 
 os.link(
