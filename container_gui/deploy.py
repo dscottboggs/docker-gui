@@ -176,7 +176,7 @@ class Application():
                 'w'
             )
         except PermissionError:
-            runcmd("sudo echo %s > %s"%(
+            runcmd("sudo echo '%s' > '%s'"%(
                 dedent(f"""
                         [Desktop Entry]
                         Version=From {self.distro.distro}
