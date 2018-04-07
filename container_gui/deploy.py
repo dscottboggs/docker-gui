@@ -194,8 +194,8 @@ class Application():
                     'applications',
                     "%s.docker.desktop" % test_input['application']
                 ),
-                os.getuid(),
-                os.getgid()
+                getuid(),
+                getgid()
             ))
         desktop_file.write(dedent(f"""
                 [Desktop Entry]
