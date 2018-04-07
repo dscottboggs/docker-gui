@@ -8,21 +8,21 @@ if not os.access('/usr/share/docker-gui', os.W_OK|os.X_OK) or not os.path.isdir(
     runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {os.getuid()}:{os.getgid()} /usr/share/docker-gui")
 
 os.link(
-    build_path(
+    os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         "container_gui",
         "runscript.pytemplate"
     ),
-    build_path('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
+    os.path.join('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
 )
 
 os.link(
-    build_path(
+    os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         "container_gui",
         "Dockerfile.pytemplate"
     ),
-    build_path('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
+    os.path.join('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
 )
 
 def read(fname):
@@ -52,4 +52,3 @@ setup(
     setup_requires=["pytest-runner"],
     tests_require=["pytest"]
 )
- 
