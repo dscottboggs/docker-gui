@@ -1,4 +1,5 @@
-from os import access, isdir
+from os import access
+from os.path import isdir
 from os.path import join as build_path
 from os import F_OK as FILE_EXISTS
 from os import R_OK as FILE_IS_READABLE
