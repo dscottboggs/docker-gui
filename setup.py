@@ -6,24 +6,28 @@ runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE)
 
 if not os.access('/usr/share/docker-gui', os.W_OK|os.X_OK) or not os.path.isdir('/usr/share/docker-gui'):
     runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {os.getuid()}:{os.getgid()} /usr/share/docker-gui")
-
-os.link(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "container_gui",
-        "runscript.pytemplate"
-    ),
-    os.path.join('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
-)
-
-os.link(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "container_gui",
-        "Dockerfile.pytemplate"
-    ),
-    os.path.join('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
-)
+try:
+    os.link(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "container_gui",
+            "runscript.pytemplate"
+        ),
+        os.path.join('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
+    )
+except FileExistsError:
+    pass
+try:
+    os.link(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "container_gui",
+            "Dockerfile.pytemplate"
+        ),
+        os.path.join('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
+    )
+except FileExistsError:
+    pass
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
