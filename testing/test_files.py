@@ -22,11 +22,11 @@ class TestFiles():
             ), "Permissions aren't right on base dir"
     def test_Dockerfile_template(self):
         assert access(
-            build_path(BASE_DIR, "Dockerfile.pytemplate"),
+            build_path(self.BASE_DIR, "Dockerfile.pytemplate"),
             FILE_IS_READABLE
         ), "Can't access Dockefile template"
         template_file = open(
-            build_path(BASE_DIR, 'Dockerfile.pytemplate')
+            build_path(self.BASE_DIR, 'Dockerfile.pytemplate')
         )
         assert sha256(template_file.read().encode('ascii')).hexdigest()\
             == '451d8484ffdeb00c350c06dfcea4239f588b5408bf95a2d349c40f3da3cf758f'\
@@ -34,9 +34,9 @@ class TestFiles():
         template_file.close()
     def test_runscript_template(self):
         assert access(
-            build_path(BASE_DIR, "runscript.pytemplate"), FILE_IS_READABLE
+            build_path(self.BASE_DIR, "runscript.pytemplate"), FILE_IS_READABLE
         ), "Can't find the runscript template"
-        template_file = open(build_path(BASE_DIR, "runscript.pytemplate"))
+        template_file = open(build_path(self.BASE_DIR, "runscript.pytemplate"))
         assert sha256(template_file.read().encode('ascii')).hexdigest()\
             == '203717a49d5a918a3bd789defe02685d1473377523f82631a0200f023ef3675a'\
             "Runscript contents are wrong."
