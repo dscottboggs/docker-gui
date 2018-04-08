@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """A simple command line interface for installing the applications."""
-from deploy import Application
+from container_gui.distros import Application
 from sys import argv
 from textwrap import dedent
 

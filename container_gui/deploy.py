@@ -11,9 +11,9 @@ from docker.types import Mount
 
 
 from container_gui.config import Config
-from distros import getdistro
+from container_gui.distros import getdistro
 from time import sleep
-from misc_functions import *
+from container_gui.misc_functions import *
 
 
 class Application():
