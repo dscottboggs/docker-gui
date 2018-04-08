@@ -83,9 +83,6 @@ class Application():
                 print(count, "seconds.")
                 sleep(1)
         self.init_files()
-        self.render_dockerfile()
-        self.write_run_script()
-        self.write_desktop_file()
 
     def run(self):
         if Config.dc.containers.list(all=True, filters={'name': self.container_name }):
@@ -155,6 +152,9 @@ class Application():
         self.run_script_file = getpath(
                     self.application_directory, f"run_{self.application}"
                 )
+        self.render_dockerfile()
+        self.write_run_script()
+        self.write_desktop_file()
 
     def write_desktop_file(self):
         try:
