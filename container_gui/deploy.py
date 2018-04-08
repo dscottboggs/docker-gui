@@ -6,13 +6,16 @@ from os import getuid, getgid
 from os import makedirs as mkdir
 from os import F_OK as file_exists
 from os import access
+from os import uname
+
+from subprocess import run, PIPE
+
 from textwrap import dedent
 from pystache import render
+from re import search as find_pattern
+
 from docker import DockerClient
 from docker.types import Mount
-from os import uname
-from re import search
-from subprocess import run, PIPE
 
 runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE, stdin=PIPE)
 sysinfo = uname()
@@ -28,7 +31,7 @@ class Config():
     except IndexError:
         application_network = dc.networks.create(network_name)
     log=print
-    kernel_version_match = search('\d\.\d\d?', sysinfo.release)
+    kernel_version_match = find_pattern('\d\.\d\d?', sysinfo.release)
     kernel_version = sysinfo.release[
         kernel_version_match.start():kernel_version_match.end()
     ]
