@@ -149,7 +149,7 @@ class Application():
                     'usr',
                     'share',
                     'applications',
-                    "%s.docker.desktop" % self.application_name
+                    "%s.docker.desktop" % self.application
                 ),
                 'w'
             )
@@ -182,7 +182,7 @@ class Application():
                         'usr',
                         'share',
                         'applications',
-                        "%s.docker.desktop" % self.application_name
+                        "%s.docker.desktop" % self.application
                     ),
                     getuid(),
                     getgid()
