@@ -126,17 +126,16 @@ class Application():
     def write_run_script(self):
         """Write a script to run this application to a file."""
         with open(self.run_script_file, 'w') as run_script_file:
-            with open(getpath(
-                        self.working_directory, "runscript.pytemplate"
-                    )) as run_script_template:
-                run_script_file.write(render(
-                    template=run_script_template.read(),
-                    context={
-                        'application_directory': self.application_directory,
-                        'image_name': self.image_name,
-                        'container_name': self.container_name
-                    }
-                ))
+            run_script_file.write(render(
+                template=getpath(
+                    self.working_directory, "runscript.pytemplate"
+                ),
+                context={
+                    'application_directory': self.application_directory,
+                    'image_name': self.image_name,
+                    'container_name': self.container_name
+                }
+            ))
 
     def write_desktop_file(self):
         """Create the .desktop file for this Applicationself.
@@ -201,17 +200,16 @@ class Application():
 
     def render_dockerfile(self):
         """Render a Dockerfile for building this application."""
-        with open(self.dockerfile_template, 'r') as dockerfile_template:
-            self.final_dockerfile = render(
-                template=dockerfile_template.read(),
-                context={
-                    'package': self.package,
-                    'application': self.application,
-                    'distro': self.distro,
-                    'uid': getuid(),
-                    'gid': getgid()
-                }
-            )
+        self.final_dockerfile = render(
+            template=self.dockerfile_template,
+            context={
+                'package': self.package,
+                'application': self.application,
+                'distro': self.distro,
+                'uid': getuid(),
+                'gid': getgid()
+            }
+        )
         with open(getpath(
                     self.application_directory, "Dockerfile"
                 ), 'w') as dockerfile:
