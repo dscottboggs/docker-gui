@@ -1,7 +1,7 @@
 """A setuptools setup for this system."""
-from os import isdir, getuid, getgid, access, link
+from os import getuid, getgid, access, link
 from os.path import join as getpath
-from os.path import realpath, dirname
+from os.path import realpath, dirname, isdir
 from os import W_OK as is_writable
 from os import X_OK as is_executable
 from setuptools import setup
