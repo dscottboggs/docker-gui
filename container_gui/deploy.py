@@ -6,7 +6,6 @@ from os import getuid, getgid
 from os import makedirs as mkdir
 from os import F_OK as file_exists
 from os import access
-from os import uname
 
 from subprocess import run, PIPE
 
@@ -14,47 +13,10 @@ from textwrap import dedent
 from pystache import render
 from re import search as find_pattern
 
-from docker import DockerClient
 from docker.types import Mount
 
-runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE, stdin=PIPE)
-sysinfo = uname()
-
-if not sysinfo.sysname=='Linux':
-    raise(NotImplementedError(f"Your system, {sysinfo.sysname}, has not been implemented yet"))
-
-class Config():
-    dc = DockerClient('unix://run/docker.sock', version='1.30')
-    network_name = "docker_application_network"
-    try:
-        application_network = dc.networks.list(names=[network_name])[0]
-    except IndexError:
-        application_network = dc.networks.create(network_name)
-    log=print
-    kernel_version_match = find_pattern('\d\.\d\d?', sysinfo.release)
-    kernel_version = sysinfo.release[
-        kernel_version_match.start():kernel_version_match.end()
-    ]
-    kernels = [
-        '2.6',
-        '3.10',
-        '3.13',
-        '3.16',
-        '4.4',
-        '4.9',
-        '4.14',
-        '4.15'
-    ]
-    kernel_index = kernels.index(kernel_version)
-
-def check_isdir(filepath:str):
-    if not isdir(filepath):
-        if access(filepath, mode=file_exists):
-            raise FileExistsError("Goal directory {filepath} exists as a file.")
-        else:
-            mkdir(filepath, mode=0o755)
-            return True
-    return False
+from config import Config
+from misc_functions import *
 
 class Application():
     """An application to deploy"""
