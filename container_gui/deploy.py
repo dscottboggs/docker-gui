@@ -130,7 +130,7 @@ class Application():
                         self.working_directory, "runscript.pytemplate"
                     )) as run_script_template:
                 run_script_file.write(render(
-                    template=run_script_template,
+                    template=run_script_template.read(),
                     context={
                         'application_directory': self.application_directory,
                         'image_name': self.image_name,
@@ -201,16 +201,17 @@ class Application():
 
     def render_dockerfile(self):
         """Render a Dockerfile for building this application."""
-        self.final_dockerfile = render(
-            template=self.dockerfile_template,
-            context={
-                'package': self.package,
-                'application': self.application,
-                'distro': self.distro,
-                'uid': getuid(),
-                'gid': getgid()
-            }
-        )
+        with open(self.dockerfile_template, 'r') as dockerfile_template:
+            self.final_dockerfile = render(
+                template=dockerfile_template.read(),
+                context={
+                    'package': self.package,
+                    'application': self.application,
+                    'distro': self.distro,
+                    'uid': getuid(),
+                    'gid': getgid()
+                }
+            )
         with open(getpath(
                     self.application_directory, "Dockerfile"
                 ), 'w') as dockerfile:
