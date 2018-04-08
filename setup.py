@@ -36,7 +36,7 @@ except FileExistsError:
 
 def read(*fname: str) -> str:
     """Get the contents of a file in the current directory."""
-    return open(getpath(dirname(__file__), *fname)).read().decode()
+    return open(getpath(dirname(__file__), *fname)).read()
 
 
 setup(
