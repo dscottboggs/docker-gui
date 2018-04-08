@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-from json import dumps
+"""The list of available distributions to work with this system."""
 from sys import maxsize
 from textwrap import dedent
-is_64bit = maxsize > 2**32  #check if arch is amd64, see https://stackoverflow.com/questions/9964396/python-check-if-a-system-is-32-or-64-bit-to-determine-whether-to-run-the-funct#9964440
+is_64bit = maxsize > 2**32  # check if arch is amd64, see https://stackoverflow.com/questions/9964396/python-check-if-a-system-is-32-or-64-bit-to-determine-whether-to-run-the-funct#9964440
 distros = []
 
+
 class Distro():
-    """This object should hold various distro-specific commands.
+    """Hold various distro-specific commands.
 
     This should contain the image tag to pull, and any package manager
     commands.
@@ -27,14 +28,16 @@ class Distro():
                                         distribution.
       - @param pkgs_update [str]: the command to run to update out-of-date
                                    packages
-      """
+    """
     def __init__(
-                self, image: str, version:str, pkgs_update: str,
-                pkgs_install: str, pkgs_refresh: str, kernel_version:str,
+                self, image: str, version: str, pkgs_update: str,
+                pkgs_install: str, pkgs_refresh: str, kernel_version: str,
                 distro=None
             ):
-        if not type('')==type(image)==type(version)==type(pkgs_update)==\
-                type(pkgs_install)==type(pkgs_refresh)==type(kernel_version):
+        """Init a Distro."""
+        if not type('') == type(image) == type(version) == type(pkgs_update)\
+                == type(pkgs_install) == type(pkgs_refresh)\
+                == type(kernel_version):
             raise TypeError(dedent(f"""
                 One of the following was not a string:
                   - image: {image} (type {type(image)})
@@ -49,18 +52,20 @@ class Distro():
         self.pkgs_update = pkgs_update
         self.pkgs_install = lambda pkg: self._install(pkgs_install, pkg)
         self.pkgs_refresh = pkgs_refresh
-        self.distro = distro if distro is not None else f"{image.capitalize()}, version {version.lower()}"
+        self.distro = distro if distro is not None else\
+            f"{image.capitalize()}, version {version.lower()}"
         self.kernel_version = kernel_version
+
     @staticmethod
     def _install(cmd, pkg):
-        if type(pkg) == type(''):
+        if isinstance(pkg, type('')):
             return "%s %s" % (cmd, pkg)
-        elif type(pkg) == type([]) or type(pkg) == type(tuple()):
+        elif isinstance(pkg, type([])) or isinstance(pkg, type(tuple())):
             outstr = cmd
             for p in pkg:
-                assert not ' ' in p, \
+                assert ' ' not in p, \
                     f"No spaces in package names! (package {p})"
-                outstr += " %s"%(p)
+                outstr += " %s" % (p)
             return outstr
         else:
             raise TypeError(
@@ -68,6 +73,7 @@ class Distro():
                     pkg, type(pkg)
                 )
             )
+
 
 distros += [
     Distro(
@@ -95,7 +101,7 @@ distros += [
     Distro(
         image=distro,
         version=version,
-        pkgs_refresh='true', # not necessary for this distro, pass.
+        pkgs_refresh='true',             # not necessary for this distro, pass.
         pkgs_install='yum install -y',
         pkgs_update='yum upgrade -y',
         kernel_version=kern
@@ -122,10 +128,10 @@ distros.append(
     Distro(
         image='antergos/archlinux-base-devel',
         version='latest',
-        pkgs_refresh='true', # install/update also do refresh (pass)
+        pkgs_refresh='true',            # install/update also do refresh (pass)
         pkgs_install='pacman -Sy',
         pkgs_update='pacman -Syu',
-        kernel_version='4.9', #minimum
+        kernel_version='4.9',                                         # minimum
         distro='Arch Linux (Antergos)'
     )
 )
@@ -146,10 +152,15 @@ distros += [
     )
 ]
 
-def getdistro(distroname:str, version:str=''):
-    getversion = lambda : version or "latest"
+
+def getdistro(distroname: str, version: str='') -> Distro:
+    """Find the appropriate distro in the list and return it."""
+    _version = version or "latest"
     for distro in distros:
-        if distro.image==distroname.lower() and distro.version==getversion().lower():
+        if distro.image == distroname.lower()\
+                and distro.version == _version.lower():
             return distro
     else:
-        raise ValueError("%s:%s is not a valid distro." % (distroname,version))
+        raise ValueError(
+            "%s:%s is not a valid distro." % (distroname, version)
+        )

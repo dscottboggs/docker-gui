@@ -1,9 +1,19 @@
+"""Config data for this particular system."""
 from docker import DockerClient
 from os import uname
+from re import search as find_pattern
+
 
 class Config():
-    if not uname().sysname=='Linux':
-        raise(NotImplementedError(f"Your system, {uname().sysname}, has not been implemented yet"))
+    """Config data for this particular system.
+
+    This currently includes the location of the local docker client and the
+    local kernel version.
+    """
+    if not uname().sysname == 'Linux':
+        raise(NotImplementedError(
+            f"Your system, {uname().sysname}, has not been implemented yet"
+        ))
     dc = DockerClient('unix://run/docker.sock', version='1.30')
     network_name = "docker_application_network"
     try:
@@ -12,7 +22,7 @@ class Config():
         application_network = dc.networks.create(network_name)
     kernel_version_match = find_pattern('\d\.\d\d?', uname().release)
     kernel_version = uname().release[
-        self.kernel_version_match.start():self.kernel_version_match.end()
+        kernel_version_match.start():kernel_version_match.end()
     ]
     kernels = [
         '2.6',

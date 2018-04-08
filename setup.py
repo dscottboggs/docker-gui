@@ -1,46 +1,53 @@
-import os
-from subprocess import run, PIPE
+"""A setuptools setup for this system."""
+from os import isdir, getuid, getgid, access, link
+from os.path import join as getpath
+from os.path import realpath, dirname
+from os import W_OK as is_writable
+from os import X_OK as is_executable
 from setuptools import setup
+from container_gui.misc_functions import runcmd
 
-runcmd = lambda cmd: run(cmd, check=True, shell=True, stdout=PIPE, stdin=PIPE)
-
-if not os.access('/usr/share/docker-gui', os.W_OK|os.X_OK) or not os.path.isdir('/usr/share/docker-gui'):
-    runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {os.getuid()}:{os.getgid()} /usr/share/docker-gui")
+if not access('/usr/share/docker-gui', is_writable | is_executable)\
+        or not isdir('/usr/share/docker-gui'):
+    runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {getuid()}:{getgid()} /usr/share/docker-gui")
 try:
-    os.link(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
+    link(
+        getpath(
+            dirname(realpath(__file__)),
             "container_gui",
             "runscript.pytemplate"
         ),
-        os.path.join('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
+        getpath('/', 'usr', 'share', 'docker-gui', 'runscript.pytemplate')
     )
 except FileExistsError:
     pass
 try:
-    os.link(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
+    link(
+        getpath(
+            dirname(realpath(__file__)),
             "container_gui",
             "Dockerfile.pytemplate"
         ),
-        os.path.join('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
+        getpath('/', 'usr', 'share', 'docker-gui', 'Dockerfile.pytemplate')
     )
 except FileExistsError:
     pass
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+def read(*fname: str) -> str:
+    """Get the contents of a file in the current directory."""
+    return open(getpath(dirname(__file__), *fname)).read().decode()
+
 
 setup(
-    name = "Containerize_GUI_Applications",
-    version = "0.0.1",
-    author = "D. Scott Boggs",
-    author_email = "scott@tams.tech",
-    description = "A quick way to run an application from another distribution.",
-    license = "GPLv3",
-    keywords = "Containerization x11 xserver",
-    url = "https://github.com/dscottboggs/docker-gui",
+    name="Containerize_GUI_Applications",
+    version="0.0.1",
+    author="D. Scott Boggs",
+    author_email="scott@tams.tech",
+    description="A quick way to run an application from another distribution.",
+    license="GPLv3",
+    keywords="Containerization x11 xserver",
+    url="https://github.com/dscottboggs/docker-gui",
     packages=['container_gui', 'testing'],
     long_description=read('README.md'),
     classifiers=[

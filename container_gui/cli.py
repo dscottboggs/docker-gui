@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+"""A simple command line interface for installing the applications."""
 from deploy import Application
 from sys import argv
 from textwrap import dedent
 
 
 def show_usage():
+    """Show the usage/help text."""
     print(dedent("""
         Run a GUI program in a docker container.
 
@@ -12,31 +14,33 @@ def show_usage():
     ))
     exit(1)
 
-def check_args(args: list):
+
+def check_args(args: list) -> dict:
+    """Store various information from the command line args in a usable way."""
     argvals = {}
     argvals['package_name'] = args[0]
     print()
     try:
-        if args[1]=='from':
+        if args[1] == 'from':
             print()
-            argvals['distro']=args[2]
+            argvals['distro'] = args[2]
         else:
             print(args[1], "should have been 'from'")
             show_usage()
-        if args[3]=='version':
+        if args[3] == 'version':
             print()
-            argvals['version']=args[4]
-            if args[5]=='launched-with':
+            argvals['version'] = args[4]
+            if args[5] == 'launched-with':
                 print()
-                argvals['application_name']=args[6]
+                argvals['application_name'] = args[6]
             else:
                 print(f'"{args[5]}"', "should have been 'launched-with'")
                 show_usage()
         else:
-            version=''
-            if args[3]=='launched-with':
+            argvals['version'] = ''
+            if args[3] == 'launched-with':
                 print()
-                argvals['application_name']=args[4]
+                argvals['application_name'] = args[4]
             else:
                 print(f'"{args[3]}"', "should have been 'launched-with'")
                 show_usage()
@@ -47,6 +51,7 @@ def check_args(args: list):
 
 
 def build(args: list):
+    """Build the appropriate Application object."""
     argvals = check_args(args)
     return Application(
         package=argvals['package_name'],
@@ -55,13 +60,16 @@ def build(args: list):
         version=argvals['version']
     )
 
+
 def run(args: list):
+    """Build the appropriate Application object, then run it."""
     build(args).run()
 
-if argv[1].lower()=='build':
+
+if argv[1].lower() == 'build':
     print("Commencing build")
     build([arg.lower() for arg in argv[2:]])
-elif argv[1].lower()=='run':
+elif argv[1].lower() == 'run':
     print("Commencing build for run")
     run([arg.lower() for arg in argv[2:]])
 else:
