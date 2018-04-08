@@ -10,7 +10,7 @@ from pystache import render
 from docker.types import Mount
 
 
-from config import Config
+from container_gui.config import Config
 from distros import getdistro
 from time import sleep
 from misc_functions import *
