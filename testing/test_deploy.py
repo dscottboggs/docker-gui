@@ -5,54 +5,54 @@ from textwrap import dedent
 from pytest import raises
 from os.path import isdir
 from os.path import join as getpath
-from container_gui.distros import getdistro
 
 
 class TestApplicationClass():
     """Tests for the Application class."""
     package_name = "x11-apps"
     application_name = "xeyes"
-    distro = getdistro("ubuntu", "16.04")
+    distro = {'name': "ubuntu", 'version': "16.04"}
 
     def get_test_application(self):
         """Retrieve a test Application object."""
         return Application(
             package=self.package_name,
             application=self.application_name,
-            distro=self.distro.name,
+            distro=self.distro['name'],
             version=self.distro.version
         )
 
     def test_init_types(self):
         """Make sure that putting the wrong type of data throws an error.
 
-        The checks are for the Application constructor."""
+        The checks are for the Application constructor.
+        """
         with raises(TypeError):
             Application(
                 package=["can't", 'put', 'it in a list'],
                 application=self.application_name,
-                distro=self.distro,
-                version=self.distro_version
+                distro=self.distro['name'],
+                version=self.distro['version']
             )
         with raises(TypeError):
             Application(
                 package=self.package_name,
                 application=["can't", 'put', 'it in a list'],
-                distro=self.distro,
-                version=self.distro_version
+                distro=self.distro['name'],
+                version=self.distro['version']
             )
         with raises(TypeError):
             Application(
                 package=self.package_name,
                 application=self.application_name,
                 distro=["can't", 'put', 'it in a list'],
-                version=self.distro_version
+                version=self.distro['version']
             )
         with raises(TypeError):
             Application(
                 package=self.package_name,
                 application=self.application_name,
-                distro=self.distro,
+                distro=self.distro['name'],
                 version=10  # must be a string not a number
             )
 
@@ -84,7 +84,7 @@ class TestApplicationClass():
             Application(
                 package=self.package_name,
                 application=self.application_name,
-                distro=self.distro,
+                distro=self.distro['name'],
                 version="Invalid version"
             )
         assert self.get_test_application().distro.pkgs_update == \
@@ -120,7 +120,7 @@ class TestApplicationClass():
         """
         test_desktop_file = dedent(f"""
             [Desktop Entry]
-            Version=From {self.distro.capitalize()}, version {self.distro_version}
+            Version=From {self.distro['name'].capitalize()}, version {self.distro['version']}
             Name={self.application_name}
             Exec={getpath(self.get_test_application().application_directory, f"run_{self.application_name}")}
             Terminal=false
