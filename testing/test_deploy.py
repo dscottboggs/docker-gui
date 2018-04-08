@@ -7,20 +7,20 @@ from os import remove, removedirs
 from os import environ as local_environment
 from os import makedirs as mkdir
 from subprocess import run, PIPE, CalledProcessError
+from container_gui.distros import getdistro
 
 class TestApplicationClass():
     """Tests for the Application class."""
-    package_name = "invalid"
-    application_name = "application"
-    distro = "ubuntu"
-    distro_version = "16.04"
+    package_name = "x11-apps"
+    application_name = "xeyes"
+    distro = getdistro("ubuntu", "16.04")
     def get_test_application(self):
         """Retrieve a test Application object"""
         return Application(
             package=self.package_name,
             application=self.application_name,
-            distro=self.distro,
-            version=self.distro_version
+            distro=self.distro.name,
+            version=self.distro.version
         )
     def test_init_types(self):
         with raises(TypeError):

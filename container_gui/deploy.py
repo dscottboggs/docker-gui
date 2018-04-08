@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-from container_gui.distros import getdistro
-test_input = {
-    "package": "x11-apps",
-    "application": "xeyes",
-    "distro": getdistro("ubuntu", "16.04"),
-}
-
-from yaml import dump
 from os.path import dirname, realpath, isdir
 from os.path import join as getpath
 from os import environ as local_environment
@@ -91,6 +83,8 @@ class Application():
                 print(count, "seconds.")
                 sleep(1)
         self.init_files()
+        self.render_dockerfile()
+        self.write_run_script()
         self.write_desktop_file()
 
     def run(self):
@@ -128,8 +122,6 @@ class Application():
             networks=[Config.application_network],
             remove=True
         )
-
-
     def write_run_script(self):
         with open(self.run_script_file, 'w') as run_script_file:
             with open(getpath(
@@ -175,6 +167,16 @@ class Application():
                 ),
                 'w'
             )
+            desktop_file.write(dedent(f"""
+                    [Desktop Entry]
+                    Version=From {self.distro.distro}
+                    Name={self.application}
+                    Exec={self.run_script_file}
+                    Terminal=false
+                    Type=Application
+                    Categories=Containerized
+                    """
+            ))
         except PermissionError:
             runcmd("""sudo su -c 'echo "{0}" > "{1}" && chown {2}:{3} {1}'""".format(
                 dedent(f"""
@@ -197,16 +199,7 @@ class Application():
                 getuid(),
                 getgid()
             ))
-        desktop_file.write(dedent(f"""
-                [Desktop Entry]
-                Version=From {self.distro.distro}
-                Name={self.application}
-                Exec={self.run_script_file}
-                Terminal=false
-                Type=Application
-                Categories=Containerized
-                """
-        ))
+            self.write_desktop_file()
 
     def build(self):
         """Builds a docker image for the specified environment."""
