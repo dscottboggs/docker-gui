@@ -8,7 +8,7 @@ from textwrap import dedent
 from pystache import render
 
 from docker.types import Mount
-from docker.containers import list as list_containers
+
 
 from config import Config
 from distros import getdistro
@@ -69,7 +69,7 @@ class Application():
                     ):
                 print("Application is already running!")
                 return
-            for container in list_containers(
+            for container in Config.dc.containers.list(
                         all=True,
                         filters={'name': self.container_name}
                     ):

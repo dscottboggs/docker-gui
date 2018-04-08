@@ -3,7 +3,7 @@
 from textwrap import dedent
 from pytest import raises
 from os.path import join as getpath
-from os import dirname, realpath
+from os.path import dirname, realpath
 from subprocess import run, PIPE, CalledProcessError
 
 
