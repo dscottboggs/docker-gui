@@ -130,7 +130,7 @@ class Application():
                         self.working_directory, "runscript.pytemplate"
                     )) as run_script_template:
                 run_script_file.write(render(
-                    text=run_script_template,
+                    template=run_script_template,
                     context={
                         'application_directory': self.application_directory,
                         'image_name': self.image_name,
