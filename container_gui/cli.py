@@ -53,12 +53,14 @@ def check_args(args: list) -> dict:
 def build(args: list):
     """Build the appropriate Application object."""
     argvals = check_args(args)
-    return Application(
+    app = Application(
         package=argvals['package_name'],
         application=argvals['application_name'],
         distro=argvals['distro'],
         version=argvals['version']
     )
+    app.build()
+    return app
 
 
 def run(args: list):

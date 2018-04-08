@@ -132,7 +132,7 @@ class TestApplicationClass():
                     'usr',
                     'share',
                     'applications',
-                    f"run_{self.application_name}"
+                    f"{self.application_name}.docker.desktop"
                 ), 'r') as desktop_file:
             assert desktop_file.read() == test_desktop_file, dedent(f"""
                 Desktop file should've been {test_desktop_file} but it was/is
