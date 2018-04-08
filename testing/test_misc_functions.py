@@ -14,7 +14,8 @@ class Test_MiscFunctions():
         """Make sure the runcmd function works right."""
         with raises(CalledProcessError):
             runcmd("invalid shell command")
-        assert runcmd("echo a test phrase").stdout.decode() == "a test phrase"\
+        assert runcmd("echo a test phrase").stdout.decode()\
+            == "a test phrase\n",\
             "Running a command resulted in the wrong output"
 
     def test_check_isdir_function(self):

@@ -19,7 +19,7 @@ class TestApplicationClass():
             package=self.package_name,
             application=self.application_name,
             distro=self.distro['name'],
-            version=self.distro.version
+            version=self.distro['version']
         )
 
     def test_init_types(self):

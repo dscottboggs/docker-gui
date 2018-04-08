@@ -90,7 +90,7 @@ class TestDistroClass():
         assert self.get_test_distro().distro == \
             sub('\n', '', dedent(f"""
                 {self.distro_image.capitalize()}, version
-                {self.distro_version}"""   # when "style" decreases readability
+                 {self.distro_version}"""  # when "style" decreases readability
             )), dedent(f"""
                 Distro description not set right,
                 {self.get_test_distro().distro}"""
@@ -118,7 +118,7 @@ class TestDistroClass():
                 Packages install command not set right when passed as a \
                 list, {self.get_test_distro().pkgs_install('test package')}."
             )
-        assert self.get_test_distro().pkgs_install(tuple("test", "package")) \
+        assert self.get_test_distro().pkgs_install(tuple(["test", "package"]))\
             == f"{self.distro_install_cmd} test package",\
             dedent(f"\
                 Packages install command not set right when passed as a \
