@@ -17,14 +17,12 @@ if dc.containers.list(all=True, filters={'name':"{{container_name}}" }):
     #an empty list is falsy and will skip this block
     if dc.containers.list(filters={'name':"{{container_name}}" }):
         print("Application is already running!")
-        return
+        exit(0)
     for container in list_containers(
                 all=True
                 filters={'name':"{{container_name}}" }
             ):
-        dc.api.remove_container(
-            container
-        )
+        dc.api.remove_container(container)
 if not dc.images.list(name="{{image_name}}"):
     build()
 dc.containers.run(

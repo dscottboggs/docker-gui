@@ -20,12 +20,6 @@ class Distro():
       - @param pkgs_install [str]: the command that the pkgs_install function
                                    will need to return in order to install
                                    packages on this particular distro.
-      - @atrr pkgs_install [function]: a function that accepts a package
-                                        name (as a string), or a list of package
-                                        names (as a list or space-separated in
-                                        a string) and returns the command used
-                                        to install those packages for this
-                                        distribution.
       - @param pkgs_update [str]: the command to run to update out-of-date
                                    packages
     """
@@ -50,30 +44,11 @@ class Distro():
         self.image = image.lower()
         self.version = version.lower()
         self.pkgs_update = pkgs_update
-        self.pkgs_install = lambda pkg: self._install(pkgs_install, pkg)
+        self.pkgs_install = pkgs_install
         self.pkgs_refresh = pkgs_refresh
         self.distro = distro if distro is not None else\
             f"{image.capitalize()}, version {version.lower()}"
         self.kernel_version = kernel_version
-
-    @staticmethod
-    def _install(cmd, pkg):
-        if isinstance(pkg, type('')):
-            return "%s %s" % (cmd, pkg)
-        elif isinstance(pkg, type([])) or isinstance(pkg, type(tuple())):
-            outstr = cmd
-            for p in pkg:
-                assert ' ' not in p, \
-                    f"No spaces in package names! (package {p})"
-                outstr += " %s" % (p)
-            return outstr
-        else:
-            raise TypeError(
-                "{} was not a string, tuple, or list, it was {}".format(
-                    pkg, type(pkg)
-                )
-            )
-
 
 distros += [
     Distro(

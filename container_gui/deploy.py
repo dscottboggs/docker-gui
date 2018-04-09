@@ -5,10 +5,9 @@ from os import environ as local_environment
 from os import getuid, getgid
 
 from textwrap import dedent
-from pystache import render
+from jinja2 import Template
 
 from docker.types import Mount
-
 
 from container_gui.config import Config
 from container_gui.distros import getdistro
@@ -125,17 +124,18 @@ class Application():
 
     def write_run_script(self):
         """Write a script to run this application to a file."""
+        with open(
+                    getpath(self.working_directory, "runscript.pytemplate")
+                ) as templatefile:
+            template = templatefile.read()
         with open(self.run_script_file, 'w') as run_script_file:
-            run_script_file.write(render(
-                template=getpath(
-                    self.working_directory, "runscript.pytemplate"
-                ),
-                context={
-                    'application_directory': self.application_directory,
-                    'image_name': self.image_name,
-                    'container_name': self.container_name
-                }
-            ))
+            run_script_file.write(
+                template.render(
+                    application_directory=self.application_directory,
+                    image_name=self.image_name,
+                    container_name=self.container_name
+                )
+            )
 
     def write_desktop_file(self):
         """Create the .desktop file for this Applicationself.
@@ -200,17 +200,17 @@ class Application():
 
     def render_dockerfile(self):
         """Render a Dockerfile for building this application."""
-        self.final_dockerfile = render(
-            template=self.dockerfile_template,
-            context={
-                'package': self.package,
-                'application': self.application,
-                'distro': self.distro,
-                'uid': getuid(),
-                'gid': getgid()
-            }
-        )
+        with open(Config.dockerfile_template, 'r') as templatefile:
+            template = Template(templatefile.read())
         with open(getpath(
                     self.application_directory, "Dockerfile"
                 ), 'w') as dockerfile:
-            dockerfile.write(self.final_dockerfile)
+            dockerfile.write(
+                template.render(
+                    package=self.package,
+                    application=self.application,
+                    distro=self.distro,
+                    uid=getuid(),
+                    gid=getgid()
+                )
+            )

@@ -57,7 +57,7 @@ setup(
         "License :: OSI Approved :: GPLv3",
     ],
     install_requires=[
-        "pystache",
+        "jinja2",
         "docker"
     ],
     setup_requires=["pytest-runner"],
