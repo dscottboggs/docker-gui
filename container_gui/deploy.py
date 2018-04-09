@@ -5,7 +5,7 @@ from os import environ as local_environment
 from os import getuid, getgid
 
 from textwrap import dedent
-from jinja2 import Template
+from jinja2 import Template as JinjaTemplate
 
 from docker.types import Mount
 
@@ -125,7 +125,7 @@ class Application():
     def write_run_script(self):
         """Write a script to run this application to a file."""
         with open(Config.runscript_template) as templatefile:
-            template = templatefile.read()
+            template = JinjaTemplate(templatefile.read())
         with open(self.run_script_file, 'w') as run_script_file:
             run_script_file.write(
                 template.render(
@@ -199,7 +199,7 @@ class Application():
     def render_dockerfile(self):
         """Render a Dockerfile for building this application."""
         with open(Config.dockerfile_template, 'r') as templatefile:
-            template = Template(templatefile.read())
+            template = JinjaTemplate(templatefile.read())
         with open(getpath(
                     self.application_directory, "Dockerfile"
                 ), 'w') as dockerfile:

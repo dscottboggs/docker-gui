@@ -106,28 +106,8 @@ class TestDistroClass():
 
     def test_pkgs_install(self):
         """Check that the packages install command was set correctly."""
-        assert self.get_test_distro().pkgs_install("test package") \
-            == f"{self.distro_install_cmd} test package",\
-            dedent(f"\
-                Packages install command not set right when passed as a \
-                string, {self.get_test_distro().pkgs_install('test package')}."
-            )
-        assert self.get_test_distro().pkgs_install(["test", "package"]) \
-            == f"{self.distro_install_cmd} test package",\
-            dedent(f"\
-                Packages install command not set right when passed as a \
-                list, {self.get_test_distro().pkgs_install('test package')}."
-            )
-        assert self.get_test_distro().pkgs_install(tuple(["test", "package"]))\
-            == f"{self.distro_install_cmd} test package",\
-            dedent(f"\
-                Packages install command not set right when passed as a \
-                tuple, {self.get_test_distro().pkgs_install('test package')}."
-            )
-        with raises(AssertionError):
-            self.get_test_distro().pkgs_install(['invalid', 'package name'])
-        with raises(TypeError):
-            self.get_test_distro().pkgs_install({'a wrongly-typed': 'entry'})
+        assert self.get_test_distro().pkgs_install == self.distro_install_cmd,\
+            "Packages install command wasn't set right."
 
     def test_pkgs_refresh(self):
         """Check that the packages refresh command was set correctly."""
@@ -136,6 +116,7 @@ class TestDistroClass():
                 Packages refresh command not set right,
                 {self.get_test_distro().pkgs_refresh}"""
             )
+
 
 class Test_get_distro_Function():
     """Make sure the "getdistro" function works right."""
