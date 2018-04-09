@@ -36,7 +36,7 @@ class TestFiles():
             build_path(self.BASE_DIR, 'Dockerfile.pytemplate')
         )
         assert sha256(template_file.read().encode('ascii')).hexdigest()\
-            == '451d8484ffdeb00c350c06dfcea4239f588b5408bf95a2d349c40f3da3cf758f',\
+            == '941b7c1d387604aca8ba8bba166e70b764d82b4c9329824c7128bf75f22497e0',\
             "Dockerfile template file contents are wrong"
         template_file.close()
 
@@ -47,5 +47,5 @@ class TestFiles():
         ), "Can't find the runscript template"
         template_file = open(build_path(self.BASE_DIR, "runscript.pytemplate"))
         assert sha256(template_file.read().encode('ascii')).hexdigest()\
-            == '203717a49d5a918a3bd789defe02685d1473377523f82631a0200f023ef3675a',\
+            == 'df42d02d957ef5ef0f7aaa5adda7fc1bbca12101c40451c35ff9769b2e5b7c1c',\
             "Runscript contents are wrong."

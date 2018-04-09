@@ -1,7 +1,7 @@
 FROM {{distro.name}}:{{distro.version}}
 MAINTAINER D. Scott Boggs "scott@tams.tech"
 
-RUN {{distro.pkgs_update}} && \
+RUN {{ distro.pkgs_update }} && \
     {{ distro.pkgs_install }} sudo libxext-dev libxrender-dev libxtst-dev
 
 RUN mkdir -p /home/GUIuser && \
