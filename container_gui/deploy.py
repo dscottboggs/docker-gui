@@ -124,9 +124,7 @@ class Application():
 
     def write_run_script(self):
         """Write a script to run this application to a file."""
-        with open(
-                    getpath(self.working_directory, "runscript.pytemplate")
-                ) as templatefile:
+        with open(Config.runscript_template) as templatefile:
             template = templatefile.read()
         with open(self.run_script_file, 'w') as run_script_file:
             run_script_file.write(

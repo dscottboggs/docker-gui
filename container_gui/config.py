@@ -1,6 +1,7 @@
 """Config data for this particular system."""
 from docker import DockerClient
-from os import uname
+from os import uname, sep
+from os.path import join as getpath
 from re import search as find_pattern
 
 
@@ -35,3 +36,17 @@ class Config():
         '4.15'
     ]
     kernel_index = kernels.index(kernel_version)
+    dockerfile_template = getpath(
+        sep,
+        "usr",
+        "share",
+        "docker-gui",
+        "Dockerfile.pytemplate"
+    )
+    runscript_template = getpath(
+        sep,
+        "usr",
+        "share",
+        "docker-gui",
+        "runscript.pytemplate"
+    )
