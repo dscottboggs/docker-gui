@@ -132,8 +132,8 @@ class Application():
                     application_directory=self.application_directory,
                     image_name=self.image_name,
                     container_name=self.container_name
-                )
-            )
+                ) + '\n'            # a hack because apparently rendering the
+            )                    # template eats the trailing newline
 
     def write_desktop_file(self):
         """Create the .desktop file for this Applicationself.
@@ -210,5 +210,5 @@ class Application():
                     distro=self.distro,
                     uid=getuid(),
                     gid=getgid()
-                )
-            )
+                ) + '\n'            # a hack because apparently rendering the
+            )                    # template eats the trailing newline
