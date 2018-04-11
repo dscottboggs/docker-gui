@@ -36,7 +36,7 @@ class TestFiles():
             build_path(self.BASE_DIR, 'Dockerfile.pytemplate')
         )
         assert sha256(template_file.read().encode('ascii')).hexdigest()\
-            == '941b7c1d387604aca8ba8bba166e70b764d82b4c9329824c7128bf75f22497e0',\
+            == 'c1f4cd3244dde9c8f2fc1f8dc56de5b7798ca03636d5d1cfa4b9cdd075e0678c',\
             "Dockerfile template file contents are wrong"
         template_file.close()
 
