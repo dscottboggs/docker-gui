@@ -211,4 +211,4 @@ class Application():
                     uid=getuid(),
                     gid=getgid()
                 ) + '\n'            # a hack because apparently rendering the
-            )                    # template eats the trailing newline
+            )                       # template eats the trailing newline

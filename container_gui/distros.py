@@ -50,13 +50,14 @@ class Distro():
             f"{image.capitalize()}, version {version.lower()}"
         self.kernel_version = kernel_version
 
+
 distros += [
     Distro(
         image=distro,
         version=version,
-        pkgs_update="'apt-get upgrade -fy'",
-        pkgs_install="'apt-get install -fy'",
-        pkgs_refresh="'apt-get update'",
+        pkgs_update="apt-get upgrade",
+        pkgs_install="apt-get install",
+        pkgs_refresh="apt-get update",
         kernel_version=kern
     ) for distro, version, kern in (
         ('ubuntu', '14.04', '3.13'),

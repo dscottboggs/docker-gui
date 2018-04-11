@@ -49,3 +49,4 @@ class TestFiles():
         assert sha256(template_file.read().encode('ascii')).hexdigest()\
             == 'df42d02d957ef5ef0f7aaa5adda7fc1bbca12101c40451c35ff9769b2e5b7c1c',\
             "Runscript contents are wrong."
+        template_file.close()
