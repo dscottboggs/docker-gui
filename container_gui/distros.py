@@ -55,8 +55,8 @@ distros += [
     Distro(
         image=distro,
         version=version,
-        pkgs_update="apt-get upgrade",
-        pkgs_install="apt-get install",
+        pkgs_update="apt-get upgrade -y",
+        pkgs_install="apt-get install -y",
         pkgs_refresh="apt-get update",
         kernel_version=kern
     ) for distro, version, kern in (
