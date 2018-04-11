@@ -1,3 +1,6 @@
 __pycache__
 .pytest_cache
 .eggs
+build/
+Containerize_GUI_Applications.egg-info/
+dist/
