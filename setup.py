@@ -1,17 +1,18 @@
 """A setuptools setup for this system."""
-from os import getuid, getgid, access, link
+from os import getuid, getgid, access
 from os.path import join as getpath
 from os.path import realpath, dirname, isdir
 from os import W_OK as is_writable
 from os import X_OK as is_executable
 from setuptools import setup
 from container_gui.misc_functions import runcmd
+from shutil import copy
 
 if not access('/usr/share/docker-gui', is_writable | is_executable)\
         or not isdir('/usr/share/docker-gui'):
     runcmd(f"sudo mkdir -p /usr/share/docker-gui && sudo chown {getuid()}:{getgid()} /usr/share/docker-gui")
 try:
-    link(
+    copy(
         getpath(
             dirname(realpath(__file__)),
             "container_gui",
@@ -22,7 +23,7 @@ try:
 except FileExistsError:
     pass
 try:
-    link(
+    copy(
         getpath(
             dirname(realpath(__file__)),
             "container_gui",
