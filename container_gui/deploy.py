@@ -81,8 +81,7 @@ class Application():
             image=self.image_name,
             devices=[
                 "/dev/snd:/dev/snd:rw",
-                "/dev/dri:/dev/dri:rw",
-                "/dev/video0:/dev/video0:rw"
+                "/dev/dri:/dev/dri:rw"
             ],
             mounts=[
                 Mount(
@@ -94,7 +93,7 @@ class Application():
             environment={
                 'DISPLAY': local_environment['DISPLAY']
             },
-            networks=[Config.application_network],
+            network=Config.application_network.id,
             remove=True
         )
 
