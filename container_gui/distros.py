@@ -54,9 +54,9 @@ distros += [
     Distro(
         image=distro,
         version=version,
-        pkgs_update='apt-get upgrade -y',
-        pkgs_install='apt-get install -y',
-        pkgs_refresh='apt-get update',
+        pkgs_update="'apt-get upgrade -fy'",
+        pkgs_install="'apt-get install -fy'",
+        pkgs_refresh="'apt-get update'",
         kernel_version=kern
     ) for distro, version, kern in (
         ('ubuntu', '14.04', '3.13'),
@@ -77,6 +77,9 @@ distros += [
         image=distro,
         version=version,
         pkgs_refresh='true',             # not necessary for this distro, pass.
+        #   That is to say that "true" is a command that always succeeds, so
+        #   any time we try to run this command it will succeed without doing
+        #   anything
         pkgs_install='yum install -y',
         pkgs_update='yum upgrade -y',
         kernel_version=kern

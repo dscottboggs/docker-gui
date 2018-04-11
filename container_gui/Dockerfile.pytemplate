@@ -1,16 +1,15 @@
-FROM {{distro.name}}:{{distro.version}}
+FROM {{distro.image}}:{{distro.version}}
 MAINTAINER D. Scott Boggs "scott@tams.tech"
 
-RUN {{ distro.pkgs_update }} && \
-    {{ distro.pkgs_install }} sudo libxext-dev libxrender-dev libxtst-dev
+RUN {{ distro.pkgs_update }}
+RUN {{ distro.pkgs_install }} sudo libxext-dev libxrender-dev libxtst-dev
 
-RUN mkdir -p /home/GUIuser && \
-    echo "GUIuser:x:{{uid}}:{{gid}}:GUIuser,,,:/home/GUIuser:/bin/bash" >>\
-        /etc/passwd && \
-    echo "GUIuser:x:{{gid}}:" >> /etc/group && \
-    echo "GUIuser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/GUIuser && \
-    chmod 0440 /etc/sudoers.d/GUIuser && \
-    chown GUIuser:GUIuser -R /home/GUIuser
+RUN mkdir -p /home/GUIuser
+RUN echo "GUIuser:x:{{uid}}:{{gid}}:GUIuser,,,:/home/GUIuser:/bin/bash" >> /etc/passwd
+RUN echo "GUIuser:x:{{gid}}:" >> /etc/group
+RUN echo "GUIuser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/GUIuser
+RUN chmod 0440 /etc/sudoers.d/GUIuser
+RUN chown GUIuser:GUIuser -R /home/GUIuser
 
 RUN {{ distro.pkgs_install }} {{ package }}
 
