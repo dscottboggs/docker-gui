@@ -50,3 +50,7 @@ class Config():
         "docker-gui",
         "runscript.pytemplate"
     )
+    user = 1000
+    group = 1000
+    user = 1000
+    group = 1000

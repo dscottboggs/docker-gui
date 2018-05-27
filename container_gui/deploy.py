@@ -2,7 +2,8 @@
 """Functionality to perform a deployment of an application."""
 from os.path import join as getpath
 from os import environ as local_environment
-from os import getuid, getgid
+from os import getuid, getgid, chmod
+from stat import S_IRWXU, S_IRGRP, S_IXGRP, S_IROTH, S_IXOTH
 
 from textwrap import dedent
 from jinja2 import Template as JinjaTemplate
@@ -133,6 +134,11 @@ class Application():
                     container_name=self.container_name
                 ) + '\n'            # a hack because apparently rendering the
             )                    # template eats the trailing newline
+        chmod(
+            self.run_script_file,
+            S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH
+            # these bitwise-or'd values basically equate to rwxr-xr-x
+        )
 
     def write_desktop_file(self):
         """Create the .desktop file for this Applicationself.
