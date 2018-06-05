@@ -1,7 +1,9 @@
 *TODO for basic functionality*:
   - ~~Write run script to file in the application folder~~
   - ~~CLI interface~~
-    - Add ability to specify build file
+  - Add ability to specify build file
+  - Add ability to install from package file
+
 *Roadmap*:
   - check for kernel disagreements
     - ~~short-term, warn the user.~~
