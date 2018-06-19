@@ -31,3 +31,15 @@ def check_isdir(filepath: str) -> bool:
             mkdir(filepath, mode=0o755)
             return True
     return False
+
+def ask(question, *formatters, default='yes'):
+    if formatters:
+        i = input(question % formatters)
+    else:
+        i = input(question)
+    if default.lower()[0] == 'y':
+        return i.lower()[0] == 'y'
+    elif default.lower()[0] == 'n':
+        return i.lower()[0] != 'n'
+    else:
+        raise ValueError("Default must be Y(es) or n(o). Got %s." % default)

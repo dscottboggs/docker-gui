@@ -1,10 +1,10 @@
 """Config data for this particular system."""
 from docker import DockerClient
-from os import uname, sep
+from os import uname, sep, environ as local_environment
 from os.path import join as getpath
 from re import search as find_pattern
 
-
+local_share = getpath(local_environment['HOME'], ".local", "share")
 class Config():
     """Config data for this particular system.
 
@@ -25,31 +25,13 @@ class Config():
     kernel_version = uname().release[
         kernel_version_match.start():kernel_version_match.end()
     ]
-    kernels = [
-        '2.6',
-        '3.10',
-        '3.13',
-        '3.16',
-        '4.4',
-        '4.9',
-        '4.14',
-        '4.15'
-    ]
     kernel_index = kernels.index(kernel_version)
-    dockerfile_template = getpath(
-        sep,
-        "usr",
-        "share",
-        "docker-gui",
-        "Dockerfile.pytemplate"
-    )
-    runscript_template = getpath(
-        sep,
-        "usr",
-        "share",
-        "docker-gui",
-        "runscript.pytemplate"
-    )
+    dockerfile_template = getpath(local_share
+                                  "docker-gui",
+                                  "Dockerfile.pytemplate")
+    runscript_template = getpath(local_share
+                                 "docker-gui",
+                                 "runscript.pytemplate")
     user = 1000
     group = 1000
     user = 1000
